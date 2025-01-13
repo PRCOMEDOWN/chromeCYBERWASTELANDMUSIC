@@ -3,12 +3,12 @@ name: NodeJS with Grunt
 on:
   push:
     branches: 
-    - main
-    - release/*    
+      - main
+      - release/*    
 
 jobs:
   my_job:
-  name: deploy to staging
+    name: deploy to staging
     runs-on: ubuntu-22.04
 
     strategy:
@@ -16,21 +16,29 @@ jobs:
         node-version: [18.x, 20.x, 22.x]
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node_version }}
-      uses: actions/setup-node@v4
-      with:
-         node-version: ${{ matrix.node_version }}  
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node_version }}  
 
-jobs:
   test:
     name: Test on node ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
+    runs-on: ubuntu-22.04
 
-    - name: npm install, build and test
-      run: 
-        npm install
-        npm run build --if-present
-        npm test
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: npm install, build and test
+        run: |
+          npm install
+          npm run build --if-present
+          npm test
